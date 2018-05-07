@@ -26,7 +26,7 @@ class Problem():
 		self.vertices[vertex].color = color
 
 		if(self.checkConflicts() != 0):
-			print("Can't assign color: Conflict")
+			# print("Can't assign color: Conflict")
 			self.vertices[vertex].color = oldColor
 			return False
 		else:
@@ -71,6 +71,21 @@ class Problem():
 			nodes.append(vertex.color)
 		print(nodes)
 
+	def Fitness(self):
+		colored = 0
+		for vertex in self.vertices:
+			if(vertex.color != None):
+				colored += 1
+
+		return colored
+	def FINAL(self):
+		maxColor = -1
+		for vertex in self.vertices:
+			if(vertex.color > maxColor):
+				maxColor = vertex.color
+		print("YOU NEED {} COLORS".format(maxColor+1))
+		print("HERE IS THE LIST OF EACH NODE WITH ITS CORRESPONDING COLOR CODE")
+		self.printNodes()
 
 # HEURISTICAS VERTEX
 def MoreFrequentColorVertex(problem):
@@ -81,7 +96,7 @@ def MoreFrequentColorVertex(problem):
 			return i
 
 def RandomVertex(problem):
-	return choice(problem.vertices)
+	return choice(problem.vertices).idVertex-1
 
 # HEURISTICAS COLOR
 def MoreFrequentColorHeuristic(problem, vertex):
@@ -91,6 +106,11 @@ def MoreFrequentColorHeuristic(problem, vertex):
 def Uncoloring(problem, vertex):
 	return problem.assignColor(vertex, None)
 
+def GreedyColoring(problem, vertex):
+	for i in range(len(problem.colors)):
+		if(problem.assignColor(vertex, i)):
+			return True
+	return False
 # OTHER
 def loadProblem(filename):
 	line = 0
@@ -116,23 +136,32 @@ def loadProblem(filename):
 if __name__ == '__main__':
 	problem = loadProblem("./Instances/queen/queen8_8.col")
 
-	print(problem.isSolved())
-	print(problem.edges)
+	# print(problem.isSolved())
+	# print(problem.edges)
 
-	problem.assignColor(0, 0)
-	# problem.assignColor(9, 0)
+	# problem.assignColor(0, 0)
+	# # problem.assignColor(9, 0)
 
-	problem.assignColor(0, 0)
-	problem.assignColor(9, 1)
+	# problem.assignColor(0, 0)
+	# problem.assignColor(9, 1)
 
-	problem.assignColor(10,3)
-	# problem.assignColor(35,1)
-	problem.assignColor(35,2)
-	problem.printCurrentColors()
-	problem.printNodes()
-	# print(MoreFrequentColorVertex(problem))
+	# problem.assignColor(10,3)
+	# # problem.assignColor(35,1)
+	# problem.assignColor(35,2)
+	# problem.printCurrentColors()
+	# problem.printNodes()
+	# # print(MoreFrequentColorVertex(problem))
 
-	Uncoloring(problem, 0)
-	problem.printCurrentColors()
-	problem.printNodes()
+	# Uncoloring(problem, 0)
+	# problem.printCurrentColors()
+	# problem.printNodes()
 
+	# GreedyColoring(problem, 2)
+
+	#TEST
+	while(not problem.isSolved()):
+		vertex = RandomVertex(problem)
+		GreedyColoring(problem, vertex)
+		#problem.Fitness() # Imprime el numero de nodos con color
+
+	problem.FINAL()
