@@ -1,5 +1,5 @@
 import numpy as np
-from random import choice
+from random import choice, randint
 from time import time
 
 class Vertex():
@@ -94,6 +94,7 @@ def FirstVertex(problem):
 	for i in range(len(problem.vertices)):
 		if(problem.vertices[i].color == None):
 			return i
+	return RandomVertex(problem)
 
 def MinimumDegreeVertex(problem):
 	'''
@@ -137,6 +138,7 @@ def MoreFrequentColorVertex(problem):
 	for i in range(len(problem.vertices)-1, -1, -1):
 		if(problem.vertices[i].color == mostFrequentColor):
 			return i
+	return RandomVertex(problem)
 
 def RandomVertex(problem):
 	return choice(problem.vertices).idVertex-1
@@ -144,10 +146,14 @@ def RandomVertex(problem):
 # HEURISTICAS COLOR
 def MoreFrequentColorHeuristic(problem, vertex):
 	mostFrequentColor = np.argmax(problem.colors)
-	return problem.assignColor(vertex, mostFrequentColor)
+	if(problem.assignColor(vertex, mostFrequentColor)):
+		return True
+	else:
+		return GreedyColoring(problem, vertex)
 
 def Uncoloring(problem, vertex):
-	return problem.assignColor(vertex, None)
+	if(problem.vertices[vertex].color != None):
+		return problem.assignColor(vertex, None)
 
 def GreedyColoring(problem, vertex):
 	for i in range(len(problem.colors)):
@@ -177,58 +183,44 @@ def loadProblem(filename):
 	return problem
 
 if __name__ == '__main__':
-	problem = loadProblem("./Instances/queen/queen8_8.col")
+	# problem = loadProblem("./Instances/queen/queen8_8.col")
+	problem = loadProblem("./Instances/le450/le450_15c.col")
 
-	# print(problem.isSolved())
-	# print(problem.edges)
+	vertexHeuristics = [FirstVertex, MinimumDegreeVertex, MaxDegreeVertex, MoreFrequentColorVertex, RandomVertex]
+	vertexFNames = ["FirstVertex", "MinimumDegreeVertex", "MaxDegreeVertex", "MoreFrequentColorVertex", "RandomVertex"]
+	colorHeuristics = [MoreFrequentColorHeuristic, Uncoloring, GreedyColoring]
+	colorFNames = ["MoreFrequentColorHeuristic", "Uncoloring", "GreedyColoring"]
 
-	# problem.assignColor(0, 0)
-	# # problem.assignColor(9, 0)
+	# file = open("RESULTS.txt", "w")
+	# t0 = time()
+	# while(not problem.isSolved()):
+	# 	vertexN = randint(0, 4)
+	# 	colorN = randint(0,2)
+	# 	vertexF = vertexHeuristics[vertexN](problem)
+	# 	colorF = colorHeuristics[colorN](problem, vertexF)
 
-	# problem.assignColor(0, 0)
-	# problem.assignColor(9, 1)
+	# 	file.write("{}-{} Fitness: {}\n".format(vertexFNames[vertexN], colorFNames[colorN], problem.Fitness()))
 
-	# problem.assignColor(10,3)
-	# # problem.assignColor(35,1)
-	# problem.assignColor(35,2)
-	# problem.printCurrentColors()
-	# problem.printNodes()
-	# # print(MoreFrequentColorVertex(problem))
+	# 	# print(vertexF)
+	# 	#problem.Fitness() # Imprime el numero de nodos con color
+	# t1 = time()
+	# print("MinimumDegreeVertex-MoreFrequentColorHeuristic Finished in {}".format(t1-t0))
+	# problem.FINAL()
 
-	# Uncoloring(problem, 0)
-	# problem.printCurrentColors()
-	# problem.printNodes()
-
-	# GreedyColoring(problem, 2)
-
-	#TEST
-
+	file = open("RESULTS.txt", "w")
 	t0 = time()
 	while(not problem.isSolved()):
-		vertex = RandomVertex(problem)
-		GreedyColoring(problem, vertex)
-		#problem.Fitness() # Imprime el numero de nodos con color
-	t1 = time()
-	print("Random-Greedy Finished in {}".format(t1-t0))
-	problem.FINAL()
+		vertexN = randint(0, 4)
+		colorN = randint(0,2)
+		vertexF = vertexHeuristics[vertexN](problem)
+		colorF = colorHeuristics[colorN](problem, vertexF)
 
-	problem = loadProblem("./Instances/queen/queen8_8.col")
-	t0 = time()
-	while(not problem.isSolved()):
-		vertex = MinimumDegreeVertex(problem)
-		GreedyColoring(problem, vertex)
-		#problem.Fitness() # Imprime el numero de nodos con color
-	t1 = time()
-	print("MinimumDegreeVertex - Greedy Finished in {}".format(t1-t0))
-	problem.FINAL()
+		file.write("{}-{} Fitness: {}\n".format(vertexFNames[vertexN], colorFNames[colorN], problem.Fitness()))
 
-	problem = loadProblem("./Instances/queen/queen8_8.col")
-	t0 = time()
-	while(not problem.isSolved()):
-		vertex = MaxDegreeVertex(problem)
-		GreedyColoring(problem, vertex)
+		# print(vertexF)
 		#problem.Fitness() # Imprime el numero de nodos con color
 	t1 = time()
-	print("MaxDegreeVertex - Greedy Finished in {}".format(t1-t0))
+	print("MinimumDegreeVertex-MoreFrequentColorHeuristic Finished in {}".format(t1-t0))
 	problem.FINAL()
+	print(problem.colors)
 	# MinimumDegreeVertex(problem)
