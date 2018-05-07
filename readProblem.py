@@ -1,5 +1,6 @@
 import numpy as np
 from random import choice
+from time import time
 
 class Vertex():
 	color = None
@@ -88,6 +89,48 @@ class Problem():
 		self.printNodes()
 
 # HEURISTICAS VERTEX
+
+def FirstVertex(problem):
+	for i in range(len(problem.vertices)):
+		if(problem.vertices[i].color == None):
+			return i
+
+def MinimumDegreeVertex(problem):
+	'''
+	Returns the first None vertex with the min number of adjacent vertices
+	'''
+	neighbors = [0] * len(problem.vertices)
+	for edge in problem.edges:
+		neighbors[edge[0]] += 1
+		neighbors[edge[1]] += 1
+	neighbors = sorted(list(zip(neighbors, range(len(neighbors)))), key=lambda x: x[0]) #list of tuples ordered by neighbor number
+	
+	for i in range(len(neighbors)):
+		numberOfNeighbors, vertexIndex = neighbors[i]
+		if(problem.vertices[vertexIndex].color == None):
+			return vertexIndex
+
+	#Couldn't find vertex (problem solved?) anyway return random
+	return RandomVertex(problem)
+
+def MaxDegreeVertex(problem):
+	'''
+	Returns the first None vertex with the max number of adjacent vertices
+	'''
+	neighbors = [0] * len(problem.vertices)
+	for edge in problem.edges:
+		neighbors[edge[0]] += 1
+		neighbors[edge[1]] += 1
+	neighbors = sorted(list(zip(neighbors, range(len(neighbors)))), key=lambda x: x[0], reverse=True) #list of tuples ordered by neighbor number
+	
+	for i in range(len(neighbors)):
+		numberOfNeighbors, vertexIndex = neighbors[i]
+		if(problem.vertices[vertexIndex].color == None):
+			return vertexIndex
+
+	#Couldn't find vertex (problem solved?) anyway return random
+	return RandomVertex(problem)
+
 def MoreFrequentColorVertex(problem):
 	#print(np.argmax(problem.colors)) #Most frequently used color
 	mostFrequentColor = np.argmax(problem.colors)
@@ -159,9 +202,33 @@ if __name__ == '__main__':
 	# GreedyColoring(problem, 2)
 
 	#TEST
+
+	t0 = time()
 	while(not problem.isSolved()):
 		vertex = RandomVertex(problem)
 		GreedyColoring(problem, vertex)
 		#problem.Fitness() # Imprime el numero de nodos con color
-
+	t1 = time()
+	print("Random-Greedy Finished in {}".format(t1-t0))
 	problem.FINAL()
+
+	problem = loadProblem("./Instances/queen/queen8_8.col")
+	t0 = time()
+	while(not problem.isSolved()):
+		vertex = MinimumDegreeVertex(problem)
+		GreedyColoring(problem, vertex)
+		#problem.Fitness() # Imprime el numero de nodos con color
+	t1 = time()
+	print("MinimumDegreeVertex - Greedy Finished in {}".format(t1-t0))
+	problem.FINAL()
+
+	problem = loadProblem("./Instances/queen/queen8_8.col")
+	t0 = time()
+	while(not problem.isSolved()):
+		vertex = MaxDegreeVertex(problem)
+		GreedyColoring(problem, vertex)
+		#problem.Fitness() # Imprime el numero de nodos con color
+	t1 = time()
+	print("MaxDegreeVertex - Greedy Finished in {}".format(t1-t0))
+	problem.FINAL()
+	# MinimumDegreeVertex(problem)
