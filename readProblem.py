@@ -77,8 +77,25 @@ class Problem():
 		for vertex in self.vertices:
 			if(vertex.color != None):
 				colored += 1
-
 		return colored
+	def ColoredRatio(self):
+		colored = 0
+		for vertex in self.vertices:
+			if(vertex.color != None):
+				colored += 1
+		return colored / len(self.vertices)
+
+	def AvgColorRatio(self):
+		total = 0
+		colors = 0
+		for vertex in self.vertices:
+			if(vertex.color != None):
+				total += self.colors[vertex.color]
+				colors += 1
+		if(colors != 0):
+			return total / colors
+		return 0
+
 	def FINAL(self):
 		maxColor = -1
 		for vertex in self.vertices:
@@ -183,8 +200,8 @@ def loadProblem(filename):
 	return problem
 
 if __name__ == '__main__':
-	# problem = loadProblem("./Instances/queen/queen8_8.col")
-	problem = loadProblem("./Instances/le450/le450_15c.col")
+	problem = loadProblem("./Instances/queen/queen8_8.col")
+	# problem = loadProblem("./Instances/le450/le450_15c.col")
 
 	vertexHeuristics = [FirstVertex, MinimumDegreeVertex, MaxDegreeVertex, MoreFrequentColorVertex, RandomVertex]
 	vertexFNames = ["FirstVertex", "MinimumDegreeVertex", "MaxDegreeVertex", "MoreFrequentColorVertex", "RandomVertex"]
@@ -215,7 +232,7 @@ if __name__ == '__main__':
 		vertexF = vertexHeuristics[vertexN](problem)
 		colorF = colorHeuristics[colorN](problem, vertexF)
 
-		file.write("{}-{} Fitness: {}\n".format(vertexFNames[vertexN], colorFNames[colorN], problem.Fitness()))
+		file.write("{}-{} Fitness: {}-{}\n".format(vertexFNames[vertexN], colorFNames[colorN], problem.ColoredRatio(), problem.AvgColorRatio()))
 
 		# print(vertexF)
 		#problem.Fitness() # Imprime el numero de nodos con color
