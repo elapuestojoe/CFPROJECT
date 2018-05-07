@@ -30,7 +30,11 @@ class Problem():
 			self.vertices[vertex].color = oldColor
 			return False
 		else:
-			if(oldColor != None and oldColor != color):
+
+			if(oldColor != None and color == None):
+				self.colors[oldColor] -= 1
+
+			if(oldColor != None and color != None and oldColor != color):
 				self.colors[oldColor] -= 1
 				self.colors[color] += 1
 			if(oldColor == None):
@@ -38,6 +42,9 @@ class Problem():
 
 		return True
 
+	# def uncolor(self, vertex):
+	# 	if(self.vertices.vertex)
+	# 	self.vertices
 	def checkConflicts(self):
 		conflicts = 0
 		for edge in self.edges:
@@ -58,7 +65,14 @@ class Problem():
 		print(self.colors)
 		# for vertex in self.vertices:
 			# print(vertex.color)
+	def printNodes(self):
+		nodes = []
+		for vertex in self.vertices:
+			nodes.append(vertex.color)
+		print(nodes)
 
+
+# HEURISTICAS VERTEX
 def MoreFrequentColorVertex(problem):
 	#print(np.argmax(problem.colors)) #Most frequently used color
 	mostFrequentColor = np.argmax(problem.colors)
@@ -69,10 +83,15 @@ def MoreFrequentColorVertex(problem):
 def RandomVertex(problem):
 	return choice(problem.vertices)
 
-def MoreFrequentColorHeuristic(problem):
+# HEURISTICAS COLOR
+def MoreFrequentColorHeuristic(problem, vertex):
 	mostFrequentColor = np.argmax(problem.colors)
-	return mostFrequentColor
+	return problem.assignColor(vertex, mostFrequentColor)
 
+def Uncoloring(problem, vertex):
+	return problem.assignColor(vertex, None)
+
+# OTHER
 def loadProblem(filename):
 	line = 0
 	problem = None
@@ -110,5 +129,10 @@ if __name__ == '__main__':
 	# problem.assignColor(35,1)
 	problem.assignColor(35,2)
 	problem.printCurrentColors()
+	problem.printNodes()
 	# print(MoreFrequentColorVertex(problem))
+
+	Uncoloring(problem, 0)
+	problem.printCurrentColors()
+	problem.printNodes()
 
