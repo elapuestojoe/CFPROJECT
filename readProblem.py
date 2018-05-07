@@ -1,4 +1,6 @@
 import numpy as np
+from random import choice
+
 class Vertex():
 	color = None
 	idVertex = None
@@ -26,12 +28,15 @@ class Problem():
 		if(self.checkConflicts() != 0):
 			print("Can't assign color: Conflict")
 			self.vertices[vertex].color = oldColor
+			return False
 		else:
 			if(oldColor != None and oldColor != color):
 				self.colors[oldColor] -= 1
 				self.colors[color] += 1
 			if(oldColor == None):
 				self.colors[color]+=1
+
+		return True
 
 	def checkConflicts(self):
 		conflicts = 0
@@ -50,8 +55,9 @@ class Problem():
 
 	def printCurrentColors(self):
 		print("CurrentColors")
-		for vertex in self.vertices:
-			print(vertex.color)
+		print(self.colors)
+		# for vertex in self.vertices:
+			# print(vertex.color)
 
 def MoreFrequentColorVertex(problem):
 	#print(np.argmax(problem.colors)) #Most frequently used color
@@ -59,6 +65,13 @@ def MoreFrequentColorVertex(problem):
 	for i in range(len(problem.vertices)-1, -1, -1):
 		if(problem.vertices[i].color == mostFrequentColor):
 			return i
+
+def RandomVertex(problem):
+	return choice(problem.vertices)
+
+def MoreFrequentColorHeuristic(problem):
+	mostFrequentColor = np.argmax(problem.colors)
+	return mostFrequentColor
 
 def loadProblem(filename):
 	line = 0
@@ -94,7 +107,8 @@ if __name__ == '__main__':
 	problem.assignColor(9, 1)
 
 	problem.assignColor(10,3)
-	problem.assignColor(35,1)
-	# problem.printCurrentColors()
-	print(MoreFrequentColorVertex(problem))
+	# problem.assignColor(35,1)
+	problem.assignColor(35,2)
+	problem.printCurrentColors()
+	# print(MoreFrequentColorVertex(problem))
 
