@@ -134,7 +134,7 @@ class Problem():
 		currentColorFitness = (1 - (np.count_nonzero(self.colors)/len(self.colors)))
 		currentNodeFitness = np.sum(self.colors) / len(self.colors)
 		avgColor = self.AvgColorRatio()
-		return (currentNodeFitness*2) + (currentColorFitness*1) + (avgColor / len(self.colors)*1.3)
+		return (currentNodeFitness*3) + (currentColorFitness*1) + (avgColor / len(self.colors)*1.3)
 
 	def EvalMove(self, vertex, color, epsilon):
 		oldColor = self.vertices[vertex].color
@@ -154,6 +154,15 @@ class Problem():
 
 		return "{},{},{},{},{},{}".format(currentColorRatio, currentNodeRatio, averageNodesUsedPerColor, averageEdgesPerNode, minNeighbors, maxNeighbors)
 
+	def NumericalStatus(self):
+		currentColorRatio = np.count_nonzero(self.colors)/len(self.colors) #ratio of used colors
+		currentNodeRatio = np.sum(self.colors) / len(self.colors) #ratio of nodes already colored
+		averageNodesUsedPerColor = self.AvgColorRatio()
+		averageEdgesPerNode = len(self.colors) / len(self.edges)
+		minNeighbors = self.neighbors[0][0]
+		maxNeighbors = self.neighbors[-1][0]
+
+		return [currentColorRatio, currentNodeRatio, averageNodesUsedPerColor, averageEdgesPerNode, minNeighbors, maxNeighbors]
 	def setNeighbors(self):
 		neighbors = [0] * len(self.vertices)
 		for edge in self.edges:

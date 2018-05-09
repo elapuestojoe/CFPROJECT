@@ -156,9 +156,9 @@ def EvalPosibilities(problem):
 	return maxFitnessIndex, fitnessArray[maxFitnessIndex]
 
 if __name__ == '__main__':
-	problemFile = "./Instances/queen/queen10_10.col"
+	# problemFile = "./Instances/queen/queen16_16.col"
+	problemFile = "./Instances/le450/le450_5c.col"
 	name = problemFile.split("/")[-1]
-	# problem = Problem.LoadProblem("./Instances/le450/le450_15c.col")
 
 	if(not os.path.isdir("data/{}".format(name))):
 		os.mkdir("data/{}".format(name))
