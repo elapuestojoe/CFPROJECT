@@ -1,3 +1,0 @@
-YOU NEED 13 COLORS
-HERE IS THE LIST OF EACH NODE WITH ITS CORRESPONDING COLOR CODE
-COLORS: [6, 6, 6, 6, 6, 8, 6, 5, 4, 5, 4, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]

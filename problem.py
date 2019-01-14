@@ -81,6 +81,14 @@ class Problem():
 			nodes.append(vertex.color)
 		print(nodes)
 
+	def writeNodes(self, folder, filename):
+		nodes = []
+		for vertex in self.vertices:
+			nodes.append(vertex.color)
+
+		with open("{}/{}".format(folder, filename), "w") as file:
+			file.write(",".join([str(x) for x in nodes]))
+
 	def Fitness(self):
 		colored = 0
 		for vertex in self.vertices:

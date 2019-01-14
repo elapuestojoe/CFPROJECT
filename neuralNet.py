@@ -5,7 +5,11 @@ import numpy as np
 from keras.utils import to_categorical
 from keras.models import model_from_json
 from os.path import isfile
+import os
 import tensorflow as tf
+from random import choice
+import sys
+from matplotlib import pyplot as plt
 def series_to_supervised(data, n_in=1, n_out=1, dropnan=True):
 	n_vars = 1 if type(data) is list else data.shape[1]
 	df = DataFrame(data)
@@ -44,11 +48,10 @@ def getXY(filename):
 
 	#Reshape as 3d for LSTM
 	x = x.reshape((x.shape[0], n_steps, n_features+1))
-	x = x.reshape((x.shape[0], n_steps, n_features+1))
+	# x = x.reshape((x.shape[0], n_steps, n_features+1))
 
 	return x, to_categorical(y, 15)
 
-	return [1],[2]
 def loadOrCreateModel(x):
 	if(isfile("model.json") and isfile("model.h5")):
 		print("Loadmodel")
@@ -62,9 +65,9 @@ def loadOrCreateModel(x):
 		return model
 	else:
 		model = Sequential()
-		model.add(LSTM(512, input_shape=(x.shape[1], x.shape[2]), return_sequences=False))
+		model.add(LSTM(256, input_shape=(x.shape[1], x.shape[2]), return_sequences=False))
 		model.add(Dropout(0.5))
-		model.add(Dense(512, activation="relu"))
+		model.add(Dense(256, activation="relu"))
 		model.add(Dropout(0.5))
 		model.add(Dense(15, activation="softmax"))
 
@@ -72,6 +75,16 @@ def loadOrCreateModel(x):
 		# fit network
 		return model
 
+def saveHistory(categorical_accuracy, val_categorical_accuracy, folder, title):
+	plt.figure()
+	plt.plot(categorical_accuracy)
+	plt.plot(val_categorical_accuracy)
+	plt.title("{} Accuracy".format(title))
+	plt.ylabel("Accuracy")
+	plt.xlabel("epoch")
+	plt.legend(["train", "test"], loc="upper left")
+	plt.savefig("./plots/{}/{}.png".format(folder,title))
+	plt.clf()
 def saveModel(model):
 	#Save model
 	model_json = model.to_json()
@@ -82,17 +95,24 @@ def saveModel(model):
 
 def main():
 
-	train_X, train_y = getXY('data/queen10_10.col/5.csv')
-	print(train_X.shape, len(train_X), train_y.shape)
+	folder = "data/{}".format(sys.argv[1])
+	os.mkdir("plots/{}".format(sys.argv[1]))
+	for file in os.listdir(folder):
 
-	val_X, val_Y = getXY('data/queen8_8.col/3.csv')
+		if(file.split(".")[-1] == "csv"):
+			train_X, train_y = getXY('{}/{}'.format(folder,file))
+			
+			print(train_X.shape, len(train_X), train_y.shape)
 
-	print(val_X.shape, len(val_X), val_Y.shape)
+			val_X, val_Y = getXY('{}/{}'.format("data/zeroin.i.1.col/", file))
 
-	with tf.Session() as sess:
-		model = loadOrCreateModel(train_X)
-		history = model.fit(train_X, train_y, epochs=200, batch_size=train_X.shape[0], validation_data=(val_X, val_Y), verbose=2, shuffle=False)
+			print(val_X.shape, len(val_X), val_Y.shape)
 
-		saveModel(model)
+			with tf.Session() as sess:
+				model = loadOrCreateModel(train_X)
+				history = model.fit(train_X, train_y, epochs=50, batch_size=train_X.shape[0], validation_data=(val_X, val_Y), verbose=2, shuffle=False)
+
+				saveModel(model)
+				saveHistory(history.history["categorical_accuracy"], history.history["val_categorical_accuracy"], sys.argv[1], file)
 if __name__ == '__main__':
 	main()

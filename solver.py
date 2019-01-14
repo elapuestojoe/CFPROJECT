@@ -157,7 +157,7 @@ def EvalPosibilities(problem):
 
 if __name__ == '__main__':
 	# problemFile = "./Instances/queen/queen16_16.col"
-	problemFile = "./Instances/le450/le450_5c.col"
+	problemFile = "./Instances/mulsol/mulsol.i.1.col"
 	name = problemFile.split("/")[-1]
 
 	if(not os.path.isdir("data/{}".format(name))):

@@ -37,7 +37,7 @@ def loadModel():
 	model.compile(loss="categorical_crossentropy", optimizer='adam', metrics=["categorical_accuracy"])
 	return model	
 
-def test(problemFile):
+def test(problemFile, problemName):
 	print("TEST")
 	problem = Problem.LoadProblem(problemFile)
 	t0 = time()
@@ -50,12 +50,16 @@ def test(problemFile):
 	print("Finished in {}".format(t1-t0))
 	print("PROBLEM SOLVED USING {} colors".format(np.count_nonzero(problem.colors)))
 	problem.printNodes()
+	problem.writeNodes("testTables", "RANDOMSOL-{}".format(problemName))
 
 def main():
 
 	# problemFile = "./Instances/queen/queen8_8.col"
-	problemFile = "./Instances/le450/le450_5c.col"
+	# problemFile = "./Instances/inithx/inithx.i.2.col"
+	problemFile = "./Instances/miles/miles1500.col"
 	problem = Problem.LoadProblem(problemFile)
+
+	problemName = problemFile.split("/")[-1]
 
 	hist = np.zeros((1,3,7))
 	currentStatus = problem.Status()
@@ -80,9 +84,10 @@ def main():
 	print("Finished in {}".format(t1-t0))
 	print("PROBLEM SOLVED USING {} colors".format(np.count_nonzero(problem.colors)))
 	problem.printNodes()
+	problem.writeNodes("testTables", "LSTMSOL-{}".format(problemName))
 
 	print("RANDOM TEST")
-	test(problemFile)
+	test(problemFile, problemName)
 
 if __name__ == '__main__':
 	main()
